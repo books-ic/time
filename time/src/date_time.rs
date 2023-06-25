@@ -320,8 +320,8 @@ impl<O: MaybeOffset> DateTime<O> {
         #[cfg(feature = "icp")]
         {
             let res = ic_cdk::api::time();
-            let res: DateTime<offset_kind::Fixed> =
-                DateTime::from_unix_timestamp_nanos(res.into()).unwrap();
+            let res: DateTime<offset_kind::Fixed> = DateTime::from_unix_timestamp_nanos(res.into())
+                .expect("ic_cdk::api::time should work properly");
             res
         }
 

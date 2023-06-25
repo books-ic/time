@@ -1039,15 +1039,17 @@ impl OffsetDateTime {
 #[cfg(feature = "icp")]
 impl CandidType for OffsetDateTime {
     fn _ty() -> Type {
-        Type::Int64
+        Type::Nat
     }
 
     fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>
     where
         S: Serializer,
     {
-        let res = self.unix_timestamp();
-        let res = serializer.serialize_int64(res);
+        let res = self.unix_timestamp_nanos();
+        let res: u128 = res.abs().try_into().unwrap();
+        let nat = candid::Nat::from(res);
+        let res = serializer.serialize_nat(&nat);
         res
     }
 }
