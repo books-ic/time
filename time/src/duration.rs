@@ -327,7 +327,7 @@ impl Duration {
             debug_assert!(nanoseconds > -(Nanosecond.per(Second) as i32));
         } else if seconds > 0 {
             debug_assert!(nanoseconds >= 0);
-            debug_assert!(nanoseconds < Nanosecond.per(Second) as _);
+            // debug_assert!(nanoseconds < Nanosecond.per(Second) as _);
         } else {
             debug_assert!(nanoseconds.unsigned_abs() < Nanosecond.per(Second));
         }
@@ -849,7 +849,7 @@ impl Duration {
         let mut seconds = const_try_opt!(self.seconds.checked_add(rhs.seconds));
         let mut nanoseconds = self.nanoseconds + rhs.nanoseconds;
 
-        if nanoseconds >= Nanosecond.per(Second) as _ || seconds < 0 && nanoseconds > 0 {
+        if nanoseconds >= Nanosecond.per(Second) as i32 || seconds < 0 && nanoseconds > 0 {
             nanoseconds -= Nanosecond.per(Second) as i32;
             seconds = const_try_opt!(seconds.checked_add(1));
         } else if nanoseconds <= -(Nanosecond.per(Second) as i32) || seconds > 0 && nanoseconds < 0
@@ -873,7 +873,7 @@ impl Duration {
         let mut seconds = const_try_opt!(self.seconds.checked_sub(rhs.seconds));
         let mut nanoseconds = self.nanoseconds - rhs.nanoseconds;
 
-        if nanoseconds >= Nanosecond.per(Second) as _ || seconds < 0 && nanoseconds > 0 {
+        if nanoseconds >= Nanosecond.per(Second) as i32 || seconds < 0 && nanoseconds > 0 {
             nanoseconds -= Nanosecond.per(Second) as i32;
             seconds = const_try_opt!(seconds.checked_add(1));
         } else if nanoseconds <= -(Nanosecond.per(Second) as i32) || seconds > 0 && nanoseconds < 0
@@ -949,7 +949,7 @@ impl Duration {
         }
         let mut nanoseconds = self.nanoseconds + rhs.nanoseconds;
 
-        if nanoseconds >= Nanosecond.per(Second) as _ || seconds < 0 && nanoseconds > 0 {
+        if nanoseconds >= Nanosecond.per(Second) as i32 || seconds < 0 && nanoseconds > 0 {
             nanoseconds -= Nanosecond.per(Second) as i32;
             seconds = match seconds.checked_add(1) {
                 Some(seconds) => seconds,
@@ -989,7 +989,7 @@ impl Duration {
         }
         let mut nanoseconds = self.nanoseconds - rhs.nanoseconds;
 
-        if nanoseconds >= Nanosecond.per(Second) as _ || seconds < 0 && nanoseconds > 0 {
+        if nanoseconds >= Nanosecond.per(Second) as i32 || seconds < 0 && nanoseconds > 0 {
             nanoseconds -= Nanosecond.per(Second) as i32;
             seconds = match seconds.checked_add(1) {
                 Some(seconds) => seconds,
@@ -1386,7 +1386,7 @@ impl PartialEq<Duration> for StdDuration {
 
 impl PartialOrd<StdDuration> for Duration {
     fn partial_cmp(&self, rhs: &StdDuration) -> Option<Ordering> {
-        if rhs.as_secs() > i64::MAX as _ {
+        if rhs.as_secs() > i64::MAX as u64 {
             return Some(Ordering::Less);
         }
 

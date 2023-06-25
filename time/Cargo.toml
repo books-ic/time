@@ -7,7 +7,12 @@ rust-version = "1.65.0"
 repository = "https://github.com/time-rs/time"
 homepage = "https://time-rs.github.io"
 keywords = ["date", "time", "calendar", "duration"]
-categories = ["date-and-time", "no-std", "parser-implementations", "value-formatting"]
+categories = [
+    "date-and-time",
+    "no-std",
+    "parser-implementations",
+    "value-formatting",
+]
 readme = "../README.md"
 license = "MIT OR Apache-2.0"
 description = "Date and time library. Fully interoperable with the standard library. Mostly compatible with #![no_std]."
@@ -37,6 +42,7 @@ serde-human-readable = ["serde", "formatting", "parsing"]
 serde-well-known = ["serde", "formatting", "parsing"]
 std = ["alloc"]
 wasm-bindgen = ["dep:js-sys"]
+icp = ["dep:candid", "dep:ic-cdk"]
 
 # If adding an optional dependency, be sure to use the `dep:` prefix above to avoid an implicit
 # feature gate.
@@ -47,7 +53,8 @@ rand = { workspace = true, optional = true }
 serde = { workspace = true, optional = true }
 time-core = { workspace = true }
 time-macros = { workspace = true, optional = true }
-
+candid = { workspace = true, optional = true }
+ic-cdk = { workspace = true, optional = true }
 [target.'cfg(target_family = "unix")'.dependencies]
 libc = { workspace = true, optional = true }
 num_threads = { workspace = true, optional = true }

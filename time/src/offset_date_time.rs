@@ -13,6 +13,9 @@ use std::io;
 #[cfg(feature = "std")]
 use std::time::SystemTime;
 
+use candid::types::{Serializer, Type};
+use candid::CandidType;
+
 use crate::date_time::offset_kind;
 #[cfg(feature = "formatting")]
 use crate::formatting::Formattable;
@@ -1030,6 +1033,30 @@ impl OffsetDateTime {
         description: &(impl Parsable + ?Sized),
     ) -> Result<Self, error::Parse> {
         Inner::parse(input, description).map(Self)
+    }
+}
+
+#[cfg(feature = "icp")]
+impl CandidType for OffsetDateTime {
+    fn _ty() -> Type {
+        Type::Int64
+    }
+
+    fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>
+    where
+        S: Serializer,
+    {
+        let res = self.unix_timestamp();
+        let res = serializer.serialize_int64(res);
+        res
+    }
+}
+
+#[cfg(feature = "icp")]
+impl Default for OffsetDateTime {
+    fn default() -> Self {
+        let res = OffsetDateTime::from_unix_timestamp_nanos(ic_cdk::api::time().into()).unwrap();
+        res
     }
 }
 

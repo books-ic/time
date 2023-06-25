@@ -352,10 +352,10 @@ impl Time {
         let mut hours = self.hour as i8 + (duration.whole_hours() % Hour.per(Day) as i64) as i8;
         let mut date_adjustment = DateAdjustment::None;
 
-        cascade!(nanoseconds in 0..Nanosecond.per(Second) as _ => seconds);
-        cascade!(seconds in 0..Second.per(Minute) as _ => minutes);
-        cascade!(minutes in 0..Minute.per(Hour) as _ => hours);
-        if hours >= Hour.per(Day) as _ {
+        cascade!(nanoseconds in 0..Nanosecond.per(Second) as i32 => seconds);
+        cascade!(seconds in 0..Second.per(Minute) as i8 => minutes);
+        cascade!(minutes in 0..Minute.per(Hour) as i8 => hours);
+        if hours >= Hour.per(Day) as i8 {
             hours -= Hour.per(Day) as i8;
             date_adjustment = DateAdjustment::Next;
         } else if hours < 0 {
@@ -385,10 +385,10 @@ impl Time {
         let mut hours = self.hour as i8 - (duration.whole_hours() % Hour.per(Day) as i64) as i8;
         let mut date_adjustment = DateAdjustment::None;
 
-        cascade!(nanoseconds in 0..Nanosecond.per(Second) as _ => seconds);
-        cascade!(seconds in 0..Second.per(Minute) as _ => minutes);
-        cascade!(minutes in 0..Minute.per(Hour) as _ => hours);
-        if hours >= Hour.per(Day) as _ {
+        cascade!(nanoseconds in 0..Nanosecond.per(Second) as i32 => seconds);
+        cascade!(seconds in 0..Second.per(Minute) as i8 => minutes);
+        cascade!(minutes in 0..Minute.per(Hour) as i8 => hours);
+        if hours >= Hour.per(Day) as i8 {
             hours -= Hour.per(Day) as i8;
             date_adjustment = DateAdjustment::Next;
         } else if hours < 0 {
@@ -443,9 +443,9 @@ impl Time {
             - ((duration.as_secs() / Second.per(Hour) as u64) % Hour.per(Day) as u64) as i8;
         let mut is_previous_day = false;
 
-        cascade!(nanosecond in 0..Nanosecond.per(Second) as _ => second);
-        cascade!(second in 0..Second.per(Minute) as _ => minute);
-        cascade!(minute in 0..Minute.per(Hour) as _ => hour);
+        cascade!(nanosecond in 0..Nanosecond.per(Second) as i32 => second);
+        cascade!(second in 0..Second.per(Minute) as i8 => minute);
+        cascade!(minute in 0..Minute.per(Hour) as i8 => hour);
         if hour < 0 {
             hour += Hour.per(Day) as i8;
             is_previous_day = true;

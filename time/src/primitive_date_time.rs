@@ -6,7 +6,11 @@ use core::time::Duration as StdDuration;
 #[cfg(feature = "formatting")]
 use std::io;
 
+use candid::types::{Serializer, Type};
+use candid::CandidType;
+
 use crate::date_time::offset_kind;
+use crate::format_description::modifier::UnixTimestamp;
 #[cfg(feature = "formatting")]
 use crate::formatting::Formattable;
 #[cfg(feature = "parsing")]
@@ -802,6 +806,30 @@ impl PrimitiveDateTime {
         description: &(impl Parsable + ?Sized),
     ) -> Result<Self, error::Parse> {
         Inner::parse(input, description).map(Self)
+    }
+}
+#[cfg(feature = "icp")]
+impl CandidType for PrimitiveDateTime {
+    fn _ty() -> Type {
+        Type::Int64
+    }
+
+    fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>
+    where
+        S: Serializer,
+    {
+        let res = self.0.assume_utc();
+        let res = res.unix_timestamp();
+        let res = serializer.serialize_int64(res);
+        res
+    }
+}
+#[cfg(feature = "icp")]
+impl Default for PrimitiveDateTime {
+    fn default() -> Self {
+        let res = OffsetDateTime::from_unix_timestamp_nanos(ic_cdk::api::time().into()).unwrap();
+        // PrimitiveDateTime::try_from(value)
+        todo!()
     }
 }
 
