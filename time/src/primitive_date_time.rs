@@ -10,7 +10,6 @@ use candid::types::{Serializer, Type};
 use candid::CandidType;
 
 use crate::date_time::offset_kind;
-use crate::format_description::modifier::UnixTimestamp;
 #[cfg(feature = "formatting")]
 use crate::formatting::Formattable;
 #[cfg(feature = "parsing")]
@@ -822,14 +821,6 @@ impl CandidType for PrimitiveDateTime {
         let res = res.unix_timestamp();
         let res = serializer.serialize_int64(res);
         res
-    }
-}
-#[cfg(feature = "icp")]
-impl Default for PrimitiveDateTime {
-    fn default() -> Self {
-        let res = OffsetDateTime::from_unix_timestamp_nanos(ic_cdk::api::time().into()).unwrap();
-        // PrimitiveDateTime::try_from(value)
-        todo!()
     }
 }
 

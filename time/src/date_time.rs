@@ -303,7 +303,7 @@ impl<O: MaybeOffset> DateTime<O> {
     // region: now
     // The return type will likely be loosened once `ZonedDateTime` is implemented. This is not a
     // breaking change calls are currently limited to only `OffsetDateTime`.
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", feature = "icp"))]
     pub fn now_utc() -> DateTime<offset_kind::Fixed>
     where
         O: IsOffsetKindFixed,
@@ -317,12 +317,23 @@ impl<O: MaybeOffset> DateTime<O> {
             js_sys::Date::new_0().into()
         }
 
+        #[cfg(feature = "icp")]
+        {
+            let res = ic_cdk::api::time();
+            let res: DateTime<offset_kind::Fixed> =
+                DateTime::from_unix_timestamp_nanos(res.into()).unwrap();
+            res
+        }
+
         #[cfg(not(all(
             target_family = "wasm",
             not(any(target_os = "emscripten", target_os = "wasi")),
-            feature = "wasm-bindgen"
+            feature = "wasm-bindgen",
         )))]
-        SystemTime::now().into()
+        #[cfg(not(feature = "icp"))]
+        {
+            SystemTime::now().into()
+        }
     }
 
     // The return type will likely be loosened once `ZonedDateTime` is implemented. This is not a
