@@ -13,7 +13,7 @@ use std::io;
 #[cfg(feature = "std")]
 use std::time::SystemTime;
 
-use candid::types::{Serializer, Type};
+use candid::types::{Serializer, Type, TypeInner};
 use candid::CandidType;
 
 use crate::date_time::offset_kind;
@@ -1039,7 +1039,7 @@ impl OffsetDateTime {
 #[cfg(feature = "icp")]
 impl CandidType for OffsetDateTime {
     fn _ty() -> Type {
-        Type::Nat
+        TypeInner::Nat.into()
     }
 
     fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>

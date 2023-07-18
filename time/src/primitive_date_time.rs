@@ -6,7 +6,7 @@ use core::time::Duration as StdDuration;
 #[cfg(feature = "formatting")]
 use std::io;
 
-use candid::types::{Serializer, Type};
+use candid::types::{Serializer, Type, TypeInner};
 use candid::CandidType;
 
 use crate::date_time::offset_kind;
@@ -810,7 +810,7 @@ impl PrimitiveDateTime {
 #[cfg(feature = "icp")]
 impl CandidType for PrimitiveDateTime {
     fn _ty() -> Type {
-        Type::Int64
+        TypeInner::Int64.into()
     }
 
     fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>
